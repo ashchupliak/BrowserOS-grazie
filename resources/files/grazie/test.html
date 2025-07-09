@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grazie Client Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { 
+            padding: 8px 16px; 
+            margin: 5px; 
+            border: 1px solid #007acc;
+            background: #007acc;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background: #005a9e; }
+        input, select { 
+            padding: 5px; 
+            margin: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 3px; 
+        }
+        #output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Grazie Client Test</h1>
+    
+    <div class="test-section info">
+        <h3>Test Your Grazie Integration</h3>
+        <p>This page allows you to test the Grazie JavaScript client we implemented for BrowserOS.</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Configuration</h3>
+        <div>
+            <label>JWT Token:</label><br>
+            <input type="password" id="jwtToken" placeholder="Enter your Grazie JWT token" style="width: 300px;">
+        </div>
+        <div>
+            <label>Environment:</label>
+            <select id="environment">
+                <option value="staging">Staging</option>
+                <option value="production">Production</option>
+            </select>
+        </div>
+        <button onclick="initializeClient()">Initialize Client</button>
+        <button onclick="testConnection()">Test Connection</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Model Testing</h3>
+        <button onclick="loadModels()">Load Available Models</button>
+        <div id="modelsList"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Chat Testing</h3>
+        <div>
+            <label>Model:</label>
+            <select id="selectedModel">
+                <option value="openai-gpt-4o">OpenAI GPT-4o</option>
+                <option value="anthropic-claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                <option value="google-gemini-1.5-pro">Gemini 1.5 Pro</option>
+            </select>
+        </div>
+        <div>
+            <label>Message:</label><br>
+            <input type="text" id="chatMessage" placeholder="Enter a test message" style="width: 300px;" value="Hello! How are you?">
+        </div>
+        <button onclick="testChat()">Send Test Message</button>
+        <button onclick="testChatStream()">Test Streaming Chat</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Output</h3>
+        <div id="output">Ready to test...\n</div>
+        <button onclick="clearOutput()">Clear Output</button>
+    </div>
+
+    <script type="module">
+        import('./grazie_client.js').then(module => {
+            window.GrazieClient = module.default || module.GrazieClient;
+            log('✅ Grazie Client loaded successfully');
+        }).catch(error => {
+            log('❌ Failed to load Grazie Client: ' + error.message);
+        });
+
+        let grazieClient = null;
+
+        window.log = function(message) {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        window.clearOutput = function() {
+            document.getElementById('output').textContent = '';
+        }
+
+        window.initializeClient = async function() {
+            const jwtToken = document.getElementById('jwtToken').value;
+            const environment = document.getElementById('environment').value;
+
+            if (!jwtToken) {
+                log('❌ Please enter a JWT token');
+                return;
+            }
+
+            try {
+                log('🔄 Initializing Grazie client...');
+                grazieClient = new window.GrazieClient(jwtToken, environment);
+                await grazieClient.init();
+                log('✅ Grazie client initialized successfully');
+                log(`📡 Base URL: ${grazieClient.baseUrl}`);
+                log(`🌍 Environment: ${environment}`);
+            } catch (error) {
+                log(`❌ Failed to initialize client: ${error.message}`);
+                grazieClient = null;
+            }
+        }
+
+        window.testConnection = async function() {
+            if (!grazieClient) {
+                log('❌ Please initialize the client first');
+                return;
+            }
+
+            try {
+                log('🔄 Testing connection...');
+                // The init() method already validates the connection
+                log('✅ Connection test passed');
+            } catch (error) {
+                log(`❌ Connection test failed: ${error.message}`);
+            }
+        }
+
+        window.loadModels = async function() {
+            if (!grazieClient) {
+                log('❌ Please initialize the client first');
+                return;
+            }
+
+            try {
+                log('🔄 Loading available models...');
+                const models = grazieClient.getAvailableModels();
+                log(`✅ Found ${models.length} models:`);
+                
+                const modelsList = document.getElementById('modelsList');
+                const selectedModel = document.getElementById('selectedModel');
+                
+                // Clear existing options
+                selectedModel.innerHTML = '';
+                modelsList.innerHTML = '<h4>Available Models:</h4>';
+                
+                models.forEach(model => {
+                    log(`  📋 ${model.name} (${model.id})`);
+                    
+                    // Add to models list display
+                    const modelDiv = document.createElement('div');
+                    modelDiv.style.margin = '5px 0';
+                    modelDiv.style.padding = '5px';
+                    modelDiv.style.background = '#f8f9fa';
+                    modelDiv.style.borderRadius = '3px';
+                    modelDiv.innerHTML = `<strong>${model.name}</strong> (${model.id})<br><small>Features: ${model.features.join(', ')}</small>`;
+                    modelsList.appendChild(modelDiv);
+                    
+                    // Add to dropdown
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.name;
+                    selectedModel.appendChild(option);
+                });
+                
+            } catch (error) {
+                log(`❌ Failed to load models: ${error.message}`);
+            }
+        }
+
+        window.testChat = async function() {
+            if (!grazieClient) {
+                log('❌ Please initialize the client first');
+                return;
+            }
+
+            const model = document.getElementById('selectedModel').value;
+            const message = document.getElementById('chatMessage').value;
+
+            if (!message) {
+                log('❌ Please enter a message');
+                return;
+            }
+
+            try {
+                log(`🔄 Sending chat message to ${model}...`);
+                log(`💬 User: ${message}`);
+                
+                const response = await grazieClient.simpleChat(message, null, model);
+                log(`🤖 Assistant: ${response}`);
+                
+            } catch (error) {
+                log(`❌ Chat failed: ${error.message}`);
+            }
+        }
+
+        window.testChatStream = async function() {
+            if (!grazieClient) {
+                log('❌ Please initialize the client first');
+                return;
+            }
+
+            const model = document.getElementById('selectedModel').value;
+            const message = document.getElementById('chatMessage').value;
+
+            if (!message) {
+                log('❌ Please enter a message');
+                return;
+            }
+
+            try {
+                log(`🔄 Starting streaming chat with ${model}...`);
+                log(`💬 User: ${message}`);
+                log(`🤖 Assistant: `);
+                
+                const messages = [{ type: 'user_message', content: message }];
+                let response = '';
+                
+                for await (const chunk of grazieClient.chatStream(messages, model)) {
+                    if (chunk.delta && chunk.delta.content) {
+                        response += chunk.delta.content;
+                        // Update the last line with streaming response
+                        const output = document.getElementById('output');
+                        const lines = output.textContent.split('\n');
+                        lines[lines.length - 1] = `🤖 Assistant: ${response}`;
+                        output.textContent = lines.join('\n');
+                        output.scrollTop = output.scrollHeight;
+                    }
+                }
+                
+                // Add final newline
+                log('');
+                log('✅ Streaming completed');
+                
+            } catch (error) {
+                log(`❌ Streaming chat failed: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html> 

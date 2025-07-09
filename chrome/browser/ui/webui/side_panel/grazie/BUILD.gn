@@ -1,0 +1,39 @@
+import("//chrome/common/features.gni")
+import("//build/config/chromeos/ui_mode.gni")
+
+assert(is_chromeos_ash || is_chromeos_lacros || is_linux || is_mac || is_win)
+
+static_library("grazie") {
+  sources = [
+    "grazie_ui.cc",
+    "grazie_ui.h",
+  ]
+
+  public_deps = [
+    "//base",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui/webui",
+    "//chrome/common",
+    "//content/public/browser",
+    "//ui/base",
+    "//ui/webui",
+  ]
+
+  deps = [
+    "//chrome/app:generated_resources",
+    "//chrome/browser/resources/side_panel/grazie:resources",
+    "//chrome/browser/ui",
+    "//chrome/common:constants",
+    "//components/prefs",
+    "//components/strings:components_strings_grit",
+    "//ui/resources:webui_resources",
+  ]
+
+  if (is_chromeos_ash) {
+    deps += [
+      "//ash/constants",
+      "//chromeos/ash/components/browser_context_helper",
+    ]
+  }
+} 

@@ -1,0 +1,704 @@
+<link rel="import" href="../controls/settings_toggle_button.html">
+<style include="cr-shared-style settings-shared md-select">
+  .grazie-header-section {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 24px 20px;
+    border-bottom: var(--cr-separator-line);
+  }
+
+  .grazie-header-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .grazie-header-content {
+    flex: 1;
+  }
+
+  .grazie-header-title {
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--cr-primary-text-color);
+    margin: 0 0 4px 0;
+  }
+
+  .grazie-header-subtitle {
+    font-size: 14px;
+    color: var(--cr-secondary-text-color);
+    line-height: 20px;
+  }
+
+  .connection-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 200px;
+  }
+
+  .connection-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f44336;
+    transition: background-color 0.3s ease;
+  }
+
+  .connection-status-dot.connected {
+    background: #4caf50;
+  }
+
+  .connection-status-dot.connecting {
+    background: #ff9800;
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  .connection-status-text {
+    font-size: 13px;
+    color: var(--cr-secondary-text-color);
+    font-weight: 500;
+  }
+
+  .security-notice-container {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+
+  .security-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    background: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #4caf50;
+  }
+
+  .security-notice-icon {
+    color: #4caf50;
+    margin-top: 2px;
+  }
+
+  .security-notice-content {
+    flex: 1;
+  }
+
+  .security-notice-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2e7d32;
+    margin: 0 0 4px 0;
+  }
+
+  .security-notice-text {
+    font-size: 13px;
+    color: #388e3c;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .grazie-config-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .provider-card {
+    background: var(--cr-card-background-color);
+    border-radius: 8px;
+    border: 1px solid var(--cr-separator-color);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .provider-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .provider-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--cr-card-background-color);
+    border-bottom: 1px solid var(--cr-separator-color);
+  }
+
+  .provider-card-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .provider-card-info {
+    flex: 1;
+  }
+
+  .provider-card-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--cr-primary-text-color);
+    margin: 0 0 4px 0;
+  }
+
+  .provider-card-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--cr-secondary-text-color);
+  }
+
+  .provider-card-content {
+    padding: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cr-primary-text-color);
+    margin-bottom: 6px;
+  }
+
+  .form-field {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--cr-separator-color);
+    border-radius: 4px;
+    font-size: 14px;
+    background: var(--cr-card-background-color);
+    color: var(--cr-primary-text-color);
+    transition: border-color 0.3s ease;
+  }
+
+  .form-field:focus {
+    outline: none;
+    border-color: var(--cr-primary-color);
+  }
+
+  .form-field:disabled {
+    background: var(--cr-card-background-color);
+    opacity: 0.6;
+  }
+
+  .form-helper {
+    font-size: 12px;
+    color: var(--cr-secondary-text-color);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  .form-helper a {
+    color: var(--cr-primary-color);
+    text-decoration: none;
+  }
+
+  .form-helper a:hover {
+    text-decoration: underline;
+  }
+
+  .test-connection-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--cr-primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .test-connection-btn:hover:not(:disabled) {
+    background: var(--cr-primary-color-dark);
+    transform: translateY(-1px);
+  }
+
+  .test-connection-btn:disabled {
+    background: var(--cr-secondary-color);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .test-connection-btn:disabled cr-icon {
+    animation: none;
+  }
+
+  .test-connection-btn.connecting cr-icon {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .connection-result {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: none;
+  }
+
+  .connection-result.success {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #4caf50;
+    display: block;
+  }
+
+  .connection-result.error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #f44336;
+    display: block;
+  }
+
+  .models-list {
+    margin-top: 16px;
+  }
+
+  .models-list-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--cr-secondary-text-color);
+  }
+
+  .model-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--cr-separator-color);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .model-item:hover {
+    background: var(--cr-card-background-color);
+    border-color: var(--cr-primary-color);
+  }
+
+  .model-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .model-name {
+    font-weight: 500;
+    color: var(--cr-primary-text-color);
+    font-size: 14px;
+  }
+
+  .model-provider {
+    font-size: 12px;
+    color: var(--cr-secondary-text-color);
+    background: var(--cr-card-background-color);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--cr-separator-color);
+  }
+
+  .model-capabilities {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .capability-badge {
+    font-size: 11px;
+    padding: 2px 6px;
+    background: var(--cr-primary-color);
+    color: white;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+
+  .model-limits {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--cr-secondary-text-color);
+  }
+
+  .limit-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .form-slider {
+    width: 100%;
+    margin: 8px 0;
+    accent-color: var(--cr-primary-color);
+  }
+
+  .slider-value {
+    font-weight: 500;
+    color: var(--cr-primary-color);
+    font-size: 14px;
+  }
+
+  .status-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #4caf50;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .status-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .models-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--cr-secondary-text-color);
+  }
+
+  .models-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .models-empty-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--cr-primary-text-color);
+  }
+
+  .models-empty-text {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .security-notice {
+      background: #1b5e20;
+      border-left-color: #4caf50;
+    }
+    
+    .security-notice-title {
+      color: #a5d6a7;
+    }
+    
+    .security-notice-text {
+      color: #c8e6c9;
+    }
+    
+    .connection-result.success {
+      background: #1b5e20;
+      color: #a5d6a7;
+      border-color: #4caf50;
+    }
+    
+    .connection-result.error {
+      background: #b71c1c;
+      color: #ffcdd2;
+      border-color: #f44336;
+    }
+  }
+</style>
+
+<div class="grazie-header-section">
+  <div class="grazie-header-icon">🧠</div>
+  <div class="grazie-header-content">
+    <h2 class="grazie-header-title">Grazie AI Platform</h2>
+    <p class="grazie-header-subtitle">
+      Unified access to multiple AI providers through JetBrains' Grazie platform
+    </p>
+  </div>
+  <div class="connection-status">
+    <div class="connection-status-dot" class$="[[getConnectionStatusClass_(connectionStatus)]]"></div>
+    <span class="connection-status-text">[[getConnectionStatusText_(connectionStatus)]]</span>
+  </div>
+</div>
+
+<div class="security-notice-container">
+  <div class="security-notice">
+    <cr-icon class="security-notice-icon" icon="settings:security"></cr-icon>
+    <div class="security-notice-content">
+      <h3 class="security-notice-title">Your JWT token is secure</h3>
+      <p class="security-notice-text">
+        Your Grazie JWT token is stored locally and encrypted on your device.
+        Access multiple AI providers through one secure token.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="grazie-config-container">
+  <!-- Grazie Configuration Card -->
+  <div class="provider-card">
+    <div class="provider-card-header">
+      <div class="provider-card-icon">G</div>
+      <div class="provider-card-info">
+        <h3 class="provider-card-name">Grazie Configuration</h3>
+        <div class="provider-card-status">
+          <div class="connection-status-dot" class$="[[getConnectionStatusClass_(connectionStatus)]]"></div>
+          <span>[[getConnectionStatusText_(connectionStatus)]]</span>
+        </div>
+      </div>
+    </div>
+    <div class="provider-card-content">
+      <!-- JWT Token Input -->
+      <div class="form-group">
+        <label class="form-label" for="grazieJwtToken">JWT Token</label>
+        <input type="password" 
+               id="grazieJwtToken"
+               class="form-field"
+               value="[[prefs.grazie.jwt_token.value]]"
+               on-input="onJwtTokenChange_"
+               placeholder="Enter your Grazie JWT token"
+               required>
+        <div class="form-helper">
+          Get your JWT token from 
+          <a href="https://account.jetbrains.com/tokens" target="_blank">JetBrains Account</a>
+        </div>
+      </div>
+
+      <!-- Environment Selection -->
+      <div class="form-group">
+        <label class="form-label" for="grazieEnvironment">Environment</label>
+        <select id="grazieEnvironment" 
+                class="form-field"
+                value="[[prefs.grazie.environment.value]]"
+                on-change="onEnvironmentChange_">
+          <option value="staging">Staging</option>
+          <option value="production">Production</option>
+        </select>
+        <div class="form-helper">
+          Choose between staging (development) and production environments
+        </div>
+      </div>
+
+      <!-- Test Connection Button -->
+      <div class="form-group">
+        <button class="test-connection-btn" 
+                class$="[[getTestButtonClass_(isConnecting)]]"
+                on-click="testConnection_"
+                disabled$="[[getTestButtonDisabled_(prefs.grazie.jwt_token.value, isConnecting)]]">
+          <cr-icon icon="settings:sync"></cr-icon>
+          [[getTestButtonText_(isConnecting)]]
+        </button>
+        <div class="connection-result" 
+             class$="[[getConnectionResultClass_(connectionResult)]]">
+          [[connectionResultMessage]]
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Models Section -->
+  <div class="provider-card" hidden$="[[!isConnected]]">
+    <div class="provider-card-header">
+      <div class="provider-card-icon">🤖</div>
+      <div class="provider-card-info">
+        <h3 class="provider-card-name">Available Models</h3>
+        <div class="provider-card-status">
+          <div class="connection-status-dot connected"></div>
+          <span>[[getModelsCountText_(availableModels)]]</span>
+        </div>
+      </div>
+    </div>
+    <div class="provider-card-content">
+      <template is="dom-if" if="[[hasModels_(availableModels)]]">
+        <!-- Default Model Selection -->
+        <div class="form-group">
+          <label class="form-label" for="defaultModel">Default Model</label>
+          <select id="defaultModel" 
+                  class="form-field"
+                  value="[[prefs.grazie.default_model.value]]"
+                  on-change="onDefaultModelChange_">
+            <template is="dom-repeat" items="[[availableModels]]" as="model">
+              <option value="[[model.id]]">[[model.displayName]] ([[model.provider]])</option>
+            </template>
+          </select>
+          <div class="form-helper">
+            Select the default model for AI operations
+          </div>
+        </div>
+
+        <!-- Models List -->
+        <div class="models-list">
+          <h4 class="models-list-title">Available Models</h4>
+          <template is="dom-repeat" items="[[availableModels]]" as="model">
+            <div class="model-item">
+              <div class="model-info">
+                <span class="model-name">[[model.displayName]]</span>
+                <span class="model-provider">[[model.provider]]</span>
+              </div>
+              <div class="model-capabilities">
+                <template is="dom-repeat" items="[[model.features]]" as="feature">
+                  <span class="capability-badge">[[feature]]</span>
+                </template>
+              </div>
+              <div class="model-limits">
+                <span class="limit-info" hidden$="[[!model.contextLimit]]">
+                  📄 Context: [[formatNumber_(model.contextLimit)]]
+                </span>
+                <span class="limit-info" hidden$="[[!model.maxOutputTokens]]">
+                  ✍️ Max Output: [[formatNumber_(model.maxOutputTokens)]]
+                </span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+      
+      <template is="dom-if" if="[[!hasModels_(availableModels)]]">
+        <div class="models-empty">
+          <div class="models-empty-icon">🤖</div>
+          <div class="models-empty-title">No Models Available</div>
+          <div class="models-empty-text">
+            Connect to Grazie to view available AI models
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <!-- Advanced Parameters -->
+  <div class="provider-card" hidden$="[[!isConnected]]">
+    <div class="provider-card-header">
+      <div class="provider-card-icon">⚙️</div>
+      <div class="provider-card-info">
+        <h3 class="provider-card-name">Advanced Parameters</h3>
+        <div class="provider-card-status">
+          <div class="connection-status-dot"></div>
+          <span>Optional configuration</span>
+        </div>
+      </div>
+    </div>
+    <div class="provider-card-content">
+      <!-- Temperature -->
+      <div class="form-group">
+        <label class="form-label" for="temperature">
+          Temperature: <span class="slider-value">[[prefs.grazie.temperature.value]]</span>
+        </label>
+        <input type="range"
+               id="temperature"
+               class="form-slider"
+               min="0"
+               max="2"
+               step="0.1"
+               value="[[prefs.grazie.temperature.value]]"
+               on-input="onTemperatureChange_">
+        <div class="form-helper">
+          Controls randomness (0 = deterministic, 2 = very creative)
+        </div>
+      </div>
+
+      <!-- Top P -->
+      <div class="form-group">
+        <label class="form-label" for="topP">
+          Top P: <span class="slider-value">[[prefs.grazie.top_p.value]]</span>
+        </label>
+        <input type="range"
+               id="topP"
+               class="form-slider"
+               min="0"
+               max="1"
+               step="0.05"
+               value="[[prefs.grazie.top_p.value]]"
+               on-input="onTopPChange_">
+        <div class="form-helper">
+          Controls nucleus sampling (lower = more focused)
+        </div>
+      </div>
+
+      <!-- Top K -->
+      <div class="form-group">
+        <label class="form-label" for="topK">
+          Top K: <span class="slider-value">[[prefs.grazie.top_k.value]]</span>
+        </label>
+        <input type="range"
+               id="topK"
+               class="form-slider"
+               min="1"
+               max="100"
+               step="1"
+               value="[[prefs.grazie.top_k.value]]"
+               on-input="onTopKChange_">
+        <div class="form-helper">
+          Limits token choices (lower = more focused)
+        </div>
+      </div>
+
+      <!-- Max Tokens -->
+      <div class="form-group">
+        <label class="form-label" for="maxTokens">Max Tokens</label>
+        <input type="number"
+               id="maxTokens"
+               class="form-field"
+               min="1"
+               max="8192"
+               value="[[prefs.grazie.max_tokens.value]]"
+               on-input="onMaxTokensChange_">
+        <div class="form-helper">
+          Maximum number of tokens to generate
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="statusMessage" class="status-toast">
+  <cr-icon icon="cr:check-circle"></cr-icon>
+  Settings saved successfully
+</div> 

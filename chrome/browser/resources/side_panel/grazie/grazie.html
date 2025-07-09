@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Grazie Chat</title>
+  <link rel="stylesheet" href="chrome://resources/css/text_defaults.css">
+  <link rel="stylesheet" href="chrome://theme/colors.css?sets=ui,chrome">
+  <link rel="stylesheet" href="grazie.css">
+  <script type="module" src="grazie.js"></script>
+</head>
+<body>
+  <div id="main-container">
+    <!-- Header Section -->
+    <div id="header">
+      <div class="header-row">
+        <div class="grazie-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+          </svg>
+          <span class="logo-text">Grazie</span>
+        </div>
+        
+        <div class="header-controls">
+          <button id="copy-content-btn" class="icon-button" title="Copy page content">
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button id="settings-btn" class="icon-button" title="Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="status-row">
+        <div id="connection-status" class="status-indicator">
+          <span id="status-dot" class="status-dot"></span>
+          <span id="status-text">Connecting...</span>
+        </div>
+        
+        <div id="model-selector-container">
+          <label for="model-selector" class="visually-hidden">Select AI Model</label>
+          <select id="model-selector" class="model-selector">
+            <option value="" disabled selected>Loading models...</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div id="chat-container">
+      <div id="chat-messages" class="chat-messages">
+        <div class="welcome-message">
+          <div class="welcome-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" class="welcome-icon">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+            </svg>
+            <h3>Welcome to Grazie</h3>
+            <p>Your unified AI chat assistant. Ask questions, get help with coding, or discuss ideas.</p>
+            <div class="welcome-shortcuts">
+              <div class="shortcut-item">
+                <kbd>⌘</kbd> + <kbd>⇧</kbd> + <kbd>L</kbd> - Toggle chat
+              </div>
+              <div class="shortcut-item">
+                <kbd>⌘</kbd> + <kbd>⇧</kbd> + <kbd>;</kbd> - Switch model
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Section -->
+    <div id="input-container">
+      <div class="input-row">
+        <div class="input-wrapper">
+          <textarea id="chat-input" 
+                    placeholder="Type your message here..." 
+                    rows="1" 
+                    maxlength="10000"
+                    aria-label="Chat input"></textarea>
+          <button id="send-btn" class="send-button" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="input-footer">
+        <div class="character-count">
+          <span id="char-count">0</span> / 10000
+        </div>
+        <div class="input-shortcuts">
+          <kbd>⌘</kbd> + <kbd>Enter</kbd> to send
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel hidden">
+      <div class="settings-header">
+        <h3>Grazie Settings</h3>
+        <button id="close-settings-btn" class="icon-button">
+          <svg width="20" height="20" viewBox="0 0 24 24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="settings-content">
+        <div class="setting-section">
+          <h4>Connection</h4>
+          <div class="setting-item">
+            <label for="jwt-token">JWT Token</label>
+            <input type="password" id="jwt-token" placeholder="Enter your Grazie JWT token">
+          </div>
+          <div class="setting-item">
+            <label for="environment">Environment</label>
+            <select id="environment">
+              <option value="staging">Staging</option>
+              <option value="production">Production</option>
+            </select>
+          </div>
+          <button id="test-connection-btn" class="test-button">Test Connection</button>
+        </div>
+        
+        <div class="setting-section">
+          <h4>Model Parameters</h4>
+          <div class="setting-item">
+            <label for="temperature">Temperature</label>
+            <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+            <span class="range-value">0.7</span>
+          </div>
+          <div class="setting-item">
+            <label for="max-tokens">Max Tokens</label>
+            <input type="number" id="max-tokens" min="1" max="4000" value="2000">
+          </div>
+          <div class="setting-item">
+            <label for="top-p">Top P</label>
+            <input type="range" id="top-p" min="0" max="1" step="0.05" value="0.95">
+            <span class="range-value">0.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Messages -->
+  <div id="feedback-container" class="feedback-container">
+    <div id="feedback-message" class="feedback-message hidden">
+      <span class="feedback-text"></span>
+      <button class="feedback-close">×</button>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Processing...</div>
+  </div>
+</body>
+</html> 
