@@ -1,0 +1,19 @@
+{
+  "format_version": "1.1",
+  "package_name": "infra/tools/luci/swarming/mac-arm64",
+  "version_file": ".versions/swarming.cipd_version",
+  "actual_install_mode": "copy",
+  "files": [
+    {
+      "name": "swarming",
+      "size": 25488642,
+      "executable": true,
+      "hash": "z1Q0JPmV5CcM2dp1rziCd-wGvJ3ai1noyDMTLf99CmAC"
+    },
+    {
+      "name": ".versions/swarming.cipd_version",
+      "size": 124,
+      "hash": "MmNOACNvlFrDzLEkQYCgyBH4fez23eR0c97CTjSp9UEC"
+    }
+  ]
+}

@@ -13,17 +13,31 @@ This guide will walk you through building BrowserOS with Grazie integration loca
 
 ### Install Dependencies
 
-1. **Install Xcode Command Line Tools**
+1. **Install Full Xcode IDE** (REQUIRED)
+   ```bash
+   # Option 1: App Store (Recommended)
+   # Open App Store → Search "Xcode" → Install (~12GB download)
+   
+   # Option 2: Apple Developer Portal
+   # Download from https://developer.apple.com/xcode/
+   ```
+   
+   **After installation, set the developer directory:**
+   ```bash
+   sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+   ```
+
+2. **Install Xcode Command Line Tools** (if not already installed)
    ```bash
    xcode-select --install
    ```
 
-2. **Install Homebrew** (if not already installed)
+3. **Install Homebrew** (if not already installed)
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-3. **Install Build Dependencies**
+4. **Install Build Dependencies**
    ```bash
    brew install python@3.11 node ninja
    ```
