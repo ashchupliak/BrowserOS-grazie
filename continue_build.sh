@@ -72,11 +72,14 @@ export PATH="$BUILD_ROOT/build/depot_tools:$PATH"
 
 # Configure the build
 print_status "🔧 Configuring build with GN..."
+
+# More robust build configuration that handles NaCl properly
 gn gen out/Release --args='
   is_debug=false
   is_component_build=false
   symbol_level=0
   enable_nacl=false
+  checkout_nacl=false
   remove_webcore_debug_symbols=true
   proprietary_codecs=true
   ffmpeg_branding="Chrome"
@@ -86,6 +89,16 @@ gn gen out/Release --args='
   target_cpu="x64"
   mac_deployment_target="10.15"
   enable_grazie_integration=true
+  
+  # Additional stability configurations
+  treat_warnings_as_errors=false
+  use_goma=false
+  use_remoteexec=false
+  
+  # Disable problematic features for local builds
+  enable_widevine=false
+  enable_hangout_services_extension=false
+  enable_google_now=false
 '
 
 if [ $? -eq 0 ]; then
