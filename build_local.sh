@@ -91,9 +91,30 @@ if [ ! -d "src" ]; then
     cd src
     
     # Check out specific version
-    CHROMIUM_VERSION=$(cat ../../CHROMIUM_VERSION)
+    print_status "Parsing Chromium version from CHROMIUM_VERSION file..."
+    
+    # Read version components from CHROMIUM_VERSION file
+    MAJOR=$(grep "MAJOR=" ../../CHROMIUM_VERSION | cut -d'=' -f2)
+    MINOR=$(grep "MINOR=" ../../CHROMIUM_VERSION | cut -d'=' -f2)
+    BUILD=$(grep "BUILD=" ../../CHROMIUM_VERSION | cut -d'=' -f2)
+    PATCH=$(grep "PATCH=" ../../CHROMIUM_VERSION | cut -d'=' -f2)
+    
+    # Construct version string
+    CHROMIUM_VERSION="$MAJOR.$MINOR.$BUILD.$PATCH"
     print_status "Checking out Chromium version: $CHROMIUM_VERSION"
-    git checkout $CHROMIUM_VERSION
+    
+    # Try to checkout the version tag
+    if git checkout "$CHROMIUM_VERSION" 2>/dev/null; then
+        print_success "Successfully checked out version $CHROMIUM_VERSION"
+    else
+        print_warning "Version tag $CHROMIUM_VERSION not found, trying with refs/tags/ prefix..."
+        if git checkout "refs/tags/$CHROMIUM_VERSION" 2>/dev/null; then
+            print_success "Successfully checked out version $CHROMIUM_VERSION"
+        else
+            print_warning "Exact version not found, using latest release branch..."
+            git checkout "origin/release/$MAJOR.$MINOR.$BUILD" || git checkout "origin/main"
+        fi
+    fi
     
     # Run hooks
     print_status "Running gclient hooks... (this may take another 30-60 minutes)"
